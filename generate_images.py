@@ -69,7 +69,7 @@ def create_csv(path, directory, name):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for i in files:
-            writer.writerow({"image":".{}{}/{}".format(NEW_DIRECTORY,directory,i),"class":"1"})
+            writer.writerow({"image":i,"class":"1"})
 
 # Actual directory
 dirr = os.getcwd()
@@ -87,14 +87,14 @@ new_gt_path = dirr+NEW_GT_DIRECTORY
 # Functions
 
 # Generates images
-#data_augmentation(real, path,(256,256), 10, gt)
+data_augmentation(real, path,(256,256), 10, gt)
 
 # Changes the name
-#change_names(path)
+change_names(path)
 
 # Move the images
-#move_images(path, new_images_path, new_gt_path)
+move_images(path, new_images_path, new_gt_path)
 
 # Creates CSV
-#create_csv(path+NEW_IMAGE_DIRECTORY, NEW_IMAGE_DIRECTORY, CSV_IMAGES_NAME)
-#create_csv(path+NEW_GT_DIRECTORY, NEW_GT_DIRECTORY,CSV_GT_NAME)
+create_csv(path+NEW_IMAGE_DIRECTORY, NEW_IMAGE_DIRECTORY, CSV_IMAGES_NAME)
+create_csv(path+NEW_GT_DIRECTORY, NEW_GT_DIRECTORY,CSV_GT_NAME)
