@@ -1,6 +1,7 @@
 import Augmentor
 import os
 import csv
+import sys
 
 NEW_DIRECTORY = "/data"
 NEW_IMAGE_DIRECTORY = "/images"
@@ -76,7 +77,7 @@ dirr = os.getcwd()
 # Path of the images
 real = dirr + "/Originales"
 # Path of the GT images
-gt = dirr+"/GT"
+gt = dirr+"/Binarias"
 # New path to save the generated images
 path = dirr+NEW_DIRECTORY
 
@@ -87,7 +88,7 @@ new_gt_path = dirr+NEW_GT_DIRECTORY
 # Functions
 
 # Generates images
-data_augmentation(real, path,(256,256), 10, gt)
+data_augmentation(real, path,(256,256), int(sys.argv[1]), gt)
 
 # Changes the name
 change_names(path)

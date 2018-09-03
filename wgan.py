@@ -20,7 +20,7 @@ samples_path = "samples_wgan"
 os.makedirs(samples_path, exist_ok=True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--n_epochs', type=int, default=200, help='number of epochs of training')
+parser.add_argument('--n_epochs', type=int, default=400, help='number of epochs of training')
 parser.add_argument('--batch_size', type=int, default=10, help='size of the batches')
 parser.add_argument('--lr', type=float, default=0.00005, help='learning rate')
 parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
@@ -83,12 +83,25 @@ class Discriminator(nn.Module):
 generator = Generator()
 discriminator = Discriminator()
 
+# Weights
+weights_generator = "weights/wgan_generator.pt"
+weights_discriminator = "weights/wgan_discriminator.pt"
+
+try:
+    generator.load_state_dict(torch.load(weights_generator))
+    discriminator.load_state_dict(torch.load(weights_discriminator))
+except:
+    print("No se pudieron cargar los pesos")
+
 if cuda:
     generator.cuda()
     discriminator.cuda()
 
 # Configure data loader
-dataset = CellsDataset("./images.csv","./data/images")
+images_csv = "./gt.csv"
+images_dirr = "./data/gt"
+
+dataset = CellsDataset(images_csv,images_dirr)
 
 dataloader = torch.utils.data.DataLoader(dataset=dataset,
                                         batch_size=opt.batch_size,
@@ -154,6 +167,7 @@ for epoch in range(opt.n_epochs):
                                                             batches_done % len(dataloader), len(dataloader),
                                                             loss_D.item(), loss_G.item()))
 
-        if batches_done % opt.sample_interval == 0:
-            save_image(gen_imgs.data[:25], samples_path+'/%d.png' % batches_done, nrow=5, normalize=True)
-        batches_done += 1
+    # Saves images and model at the end of every epoch
+    save_image(gen_imgs.data[:25], samples_path+'/epoch_%d.png' % epoch, nrow=5, normalize=True)
+    torch.save(generator.state_dict(), weights_generator)
+    torch.save(discriminator.state_dict(), weights_discriminator)
